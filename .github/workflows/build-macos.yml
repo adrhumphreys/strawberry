@@ -28,7 +28,8 @@ jobs:
             -DUSE_BUNDLE=ON \
             -DCMAKE_PREFIX_PATH="/opt/strawberry_macos_arm64_release/lib/cmake" \
             -DPKG_CONFIG_EXECUTABLE="/opt/strawberry_macos_arm64_release/bin/pkg-config" \
-            -DICU_ROOT="/opt/strawberry_macos_arm64_release"
+            -DICU_ROOT="/opt/strawberry_macos_arm64_release" \
+            -DENABLE_QTSPARKLE=OFF
           cmake --build . --parallel
 
       - name: Package
