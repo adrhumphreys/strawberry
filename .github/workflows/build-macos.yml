@@ -30,7 +30,7 @@ jobs:
             -DPKG_CONFIG_EXECUTABLE="/opt/strawberry_macos_arm64_release/bin/pkg-config" \
             -DICU_ROOT="/opt/strawberry_macos_arm64_release" \
             -DENABLE_QTSPARKLE=OFF
-          cmake --build . --parallel
+          cmake --build . --parallel 2
 
       - name: Package
         run: |
