@@ -36,8 +36,8 @@ jobs:
         run: |
           cd build
           /opt/strawberry_macos_arm64_release/bin/cmake --install .
-          cp /opt/strawberry_macos_arm64_release/lib/libsoup-3.0.0.dylib strawberry.app/Contents/Frameworks/
           /opt/strawberry_macos_arm64_release/bin/macdeployqt strawberry.app -dmg
+          cp /opt/strawberry_macos_arm64_release/lib/libsoup-3.0.0.dylib strawberry.app/Contents/Frameworks/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
