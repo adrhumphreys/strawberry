@@ -36,12 +36,14 @@ jobs:
         run: |
           cd build
           /opt/strawberry_macos_arm64_release/bin/cmake --install .
-          /opt/strawberry_macos_arm64_release/bin/macdeployqt strawberry.app -dmg
+          mkdir -p strawberry.app/Contents/Frameworks
           cp /opt/strawberry_macos_arm64_release/lib/libsoup-3.0.0.dylib strawberry.app/Contents/Frameworks/
+          /opt/strawberry_macos_arm64_release/bin/macdeployqt strawberry.app -no-strip
+          zip -r strawberry-macos-arm64.zip strawberry.app
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: strawberry-macos-arm64
-          path: build/strawberry.dmg
+          path: build/strawberry-macos-arm64.zip
           retention-days: 7
