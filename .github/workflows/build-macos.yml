@@ -1,0 +1,46 @@
+name: Build macOS ARM64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Download dependencies
+        run: |
+          curl -f -O -L https://github.com/strawberrymusicplayer/strawberry-macos-dependencies/releases/latest/download/strawberry-macos-arm64-release.tar.xz
+          sudo tar -C / -xf strawberry-macos-arm64-release.tar.xz
+          rm strawberry-macos-arm64-release.tar.xz
+
+      - name: Build
+        run: |
+          mkdir build && cd build
+          PKG_CONFIG_PATH=/opt/strawberry_macos_arm64_release/lib/pkgconfig \
+          LDFLAGS="-L/opt/strawberry_macos_arm64_release/lib -Wl,-rpath,/opt/strawberry_macos_arm64_release/lib" \
+          /opt/strawberry_macos_arm64_release/bin/cmake -S .. -B . \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DUSE_BUNDLE=ON \
+            -DCMAKE_PREFIX_PATH="/opt/strawberry_macos_arm64_release/lib/cmake" \
+            -DPKG_CONFIG_EXECUTABLE="/opt/strawberry_macos_arm64_release/bin/pkg-config" \
+            -DICU_ROOT="/opt/strawberry_macos_arm64_release"
+          cmake --build . --parallel
+
+      - name: Package
+        run: |
+          cd build
+          /opt/strawberry_macos_arm64_release/bin/cmake --install .
+          cp /opt/strawberry_macos_arm64_release/lib/libsoup-3.0.0.dylib strawberry.app/Contents/Frameworks/
+          /opt/strawberry_macos_arm64_release/bin/macdeployqt strawberry.app -dmg
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: strawberry-macos-arm64
+          path: build/strawberry.dmg
+          retention-days: 7
